@@ -10,7 +10,7 @@ conn = psycopg2.connect(
     host="localhost",
     database="titanic_db",
     user="postgres",
-    password="bobby1432",
+    password="Deepak@777",
     port="5432"
 )
 

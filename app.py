@@ -2,6 +2,34 @@
 import streamlit as st
 import psycopg2
 import pandas as pd
+import os
+from dotenv import load_dotenv
+
+# Load database credentials from the .env file in this project folder
+load_dotenv()
+
+def get_db_connection():
+    """Create a PostgreSQL connection using .env credentials."""
+    database_url = os.getenv("DATABASE_URL")
+    if database_url:
+        return psycopg2.connect(database_url, sslmode=os.getenv("PGSSLMODE", "require"))
+
+    required = ["PGUSER", "PGPASSWORD"]
+    missing = [key for key in required if not os.getenv(key)]
+    if missing:
+        raise ValueError(
+            "Missing environment variable(s): " + ", ".join(missing) +
+            ". Add them to the .env file in the Titanic_Project folder."
+        )
+
+    return psycopg2.connect(
+        host=os.getenv("PGHOST", "ep-twilight-credit-aodnugpw-pooler.c-2.ap-southeast-1.aws.neon.tech"),
+        database=os.getenv("PGDATABASE", "neondb"),
+        user=os.getenv("PGUSER"),
+        password=os.getenv("PGPASSWORD"),
+        port=os.getenv("PGPORT", "5432"),
+        sslmode=os.getenv("PGSSLMODE", "require")
+    )
 
 # Page Configuration
 st.set_page_config(
@@ -15,14 +43,7 @@ st.title("🚢 Titanic Data Analysis")
 
 # PostgreSQL Connection
 try:
-    conn = psycopg2.connect(
-        host=st.secrets["postgres"]["host"],
-        database=st.secrets["postgres"]["database"],
-        user=st.secrets["postgres"]["user"],
-        password=st.secrets["postgres"]["password"],
-        port=st.secrets["postgres"]["port"],
-        sslmode=st.secrets["postgres"]["sslmode"]
-    )
+    conn = get_db_connection()
 
     st.success("PostgreSQL connected successfully!")
 
@@ -161,14 +182,7 @@ try:
 
     if st.button("Run SQL Query"):
         try:
-            with psycopg2.connect(
-                host=st.secrets["postgres"]["host"],
-                database=st.secrets["postgres"]["database"],
-                user=st.secrets["postgres"]["user"],
-                password=st.secrets["postgres"]["password"],
-                port=st.secrets["postgres"]["port"],
-        sslmode=st.secrets["postgres"]["sslmode"]
-            ) as sql_conn:
+            with get_db_connection() as sql_conn:
 
                 result = pd.read_sql_query(
                     queries[selected_query],
