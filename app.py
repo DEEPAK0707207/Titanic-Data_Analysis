@@ -20,7 +20,8 @@ try:
         database=st.secrets["postgres"]["database"],
         user=st.secrets["postgres"]["user"],
         password=st.secrets["postgres"]["password"],
-        port=st.secrets["postgres"]["port"]
+        port=st.secrets["postgres"]["port"],
+        sslmode=st.secrets["postgres"]["sslmode"]
     )
 
     st.success("PostgreSQL connected successfully!")
@@ -165,7 +166,8 @@ try:
                 database=st.secrets["postgres"]["database"],
                 user=st.secrets["postgres"]["user"],
                 password=st.secrets["postgres"]["password"],
-                port=st.secrets["postgres"]["port"]
+                port=st.secrets["postgres"]["port"],
+        sslmode=st.secrets["postgres"]["sslmode"]
             ) as sql_conn:
 
                 result = pd.read_sql_query(
