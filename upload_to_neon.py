@@ -3,7 +3,6 @@ import psycopg2
 import os
 from dotenv import load_dotenv
 from psycopg2.extras import execute_batch
-
 # Load .env from the project folder
 env_path = os.path.join(os.path.dirname(__file__), ".env")
 load_dotenv(dotenv_path=env_path, override=True)
@@ -11,7 +10,6 @@ load_dotenv(dotenv_path=env_path, override=True)
 # Check the database host
 print("HOST:", os.getenv("PGHOST"))
 print("DATABASE:", os.getenv("PGDATABASE"))
-
 DATABASE_URL = {
     "host": os.getenv("PGHOST"),
     "database": os.getenv("PGDATABASE"),
